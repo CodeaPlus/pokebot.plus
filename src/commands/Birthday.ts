@@ -2,84 +2,9 @@ import { CommandInteraction, Client, ApplicationCommandType, ApplicationCommandO
 import { Command } from "../Command";
 import nodeHtmlToImage from 'node-html-to-image';
 import chroma from 'chroma-js';
-import { Pokemon } from "src/domain/pokemon.interface";
-import { POKEMON_TYPES } from '../utils/pokemon-types';
-
-const languages = [{
-	name: "English",
-	value: "en"
-}, {
-	name: "Spanish",
-	value: "es"
-}, {
-	name: "Japanese",
-	value: "ja"
-}]
-
-const pokemonTest: Pokemon = {
-	height: 19,
-	id: 323,
-	name: "camerupt",
-	order: 434,
-	sprites: {
-		front_default: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/323.png",
-		front_shiny: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/323.png"
-	},
-	types: [{
-		slot: 1,
-		name: "fire"
-	}, {
-		slot: 2,
-		name: "ground"
-	}],
-	weight: 2200,
-	flavors: [{
-		language: "en",
-		text: "The humps on Camerupt’s back are formed by a transformation of its bones. They sometimes blast out molten magma. This Pokémon apparently erupts often when it is enraged."
-	}, {
-		language: "es",
-		text: "Las jorobas de Camerupt se originaron por una deformación de los huesos. A veces escupen magma líquido, sobre todo cuando el Pokémon se enfada."
-	}, {
-		language: "ja",
-		text: "背中の　コブは　骨が　形を　変えたもの。煮えたぎった　マグマを　時々　噴き上げる。怒った　ときに　よく　噴火する　らしい。"
-	}]
-}
-
-const getColor = (pokemon: Pokemon) => {
-	const type = pokemon.types[0].name;
-	return POKEMON_TYPES.filter(pokeType => pokeType.name === type)[0].color;
-}
-
-const getShinyChance = (pokemon: Pokemon) => {
-	const shinyChance = Math.floor(Math.random() * 100) + 1;
-	return shinyChance <= 1 ? pokemon.sprites.front_shiny : pokemon.sprites.front_default;
-}
-
-const getPattern = (pokemon: Pokemon) => {
-	const type = pokemon.types[0].name;
-	return `https://raw.githubusercontent.com/ddumst/pokecalendar-bot/master/src/assets/patterns/${type}-pattern.png`;
-}
-
-const getFlavorText = (pokemon: Pokemon, language: string) => {
-	const flavor = pokemon.flavors.filter(flavor => flavor.language === language)[0];
-	return flavor.text;
-}
-
-const getWeight = (pokemon: Pokemon) => {
-	const weight = pokemon.weight / 10;
-	return weight.toFixed(2);
-}
-
-const getHeight = (pokemon: Pokemon) => {
-	const height = pokemon.height / 10;
-	return height.toFixed(2);
-}
-
-const getTypes = (pokemon: Pokemon) => {
-	const types = pokemon.types.map(type => type.name.charAt(0).toUpperCase() + type.name.slice(1));
-	const typesString = types.join(' / ');
-	return typesString;
-}
+import { pokemonTest } from "../utils/pokemon-dummy";
+import { regexDay, regexMonth, getShinyChance, getPattern, getColor, getHeight, getWeight, getTypes, getFlavorText } from "../utils/pokemon.utils";
+import { languages } from '../domain/pokemon.interface';
 
 export const Birthday: Command = {
 	name: "birthday",
@@ -101,24 +26,15 @@ export const Birthday: Command = {
 			const month = interaction.options.get("month")?.value?.toString() || '01';
 			const languageValue = interaction.options.get("language")?.value?.toString() || "en";
 
-			// validate day has 2 digits and not exceed 31
-			const regex = /^(0[1-9]|[12][0-9]|3[01])$/;
-
-			// validate month has 2 digits and not exceed 12
-			const regexMonth = /^(0[1-9]|1[012])$/;
-
-			// Get language name from langeuage array and language value
 			const languageName = languages.find(language => language.value === languageValue)?.name;
 
-			// Get the author data
 			const authorName = interaction.user.username;
 			const authorId = interaction.user.id;
 			const authorAvatar = interaction.user.avatarURL();
 
-			// Get month name by month number
 			const monthName = new Date(2021, parseInt(month) - 1, 1).toLocaleString(languageValue, { month: "long" });
 
-			if (!regex.test(day || "")) {
+			if (!regexDay.test(day || "")) {
 				return interaction.followUp({
 					ephemeral: true,
 					content: "Please enter a valid day in the format DD",
@@ -286,8 +202,6 @@ export const Birthday: Command = {
 				console.log("Error generating image: ", err);
 				interaction.followUp("Error generating image: " + err)
 			}
-
-
 		}
 	},
 };

@@ -23,3 +23,14 @@ export interface Flavor {
   language: string;
   text: string;
 }
+
+export const languages = [{
+  name: "English",
+  value: "en"
+}, {
+  name: "Spanish",
+  value: "es"
+}, {
+  name: "Japanese",
+  value: "ja"
+}]
