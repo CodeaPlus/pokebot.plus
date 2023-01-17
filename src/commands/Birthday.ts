@@ -6,6 +6,8 @@ import { pokemonTest } from "../utils/pokemon-dummy";
 import { regexDay, regexMonth, getShinyChance, getPattern, getColor, getHeight, getWeight, getTypes, getFlavorText } from "../utils/pokemon.utils";
 import { languages } from '../domain/pokemon.interface';
 
+const birthdayQueue = new Map();
+
 export const Birthday: Command = {
 	name: "birthday",
 	description: "Generates a Pokemon image for your birthday",
@@ -21,12 +23,25 @@ export const Birthday: Command = {
 		},
 	],
 	run: async (client: Client, interaction: CommandInteraction) => {
+		if (birthdayQueue.has(interaction.user.id)) {
+			interaction.followUp({
+				ephemeral: false,
+				content: "You already have a birthday in the queue",
+			});
+			return;
+		}
+
 		if (interaction.options.get("day")?.value) {
+			birthdayQueue.set(interaction.user.id, interaction);
+
 			const day = interaction.options.get("day")?.value?.toString();
 			const month = interaction.options.get("month")?.value?.toString() || '01';
 			const languageValue = interaction.options.get("language")?.value?.toString() || "en";
 
-			const languageName = languages.find(language => language.value === languageValue)?.name;
+			const pokemonName = pokemonTest.name
+				.split(" ")
+				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+				.join(" ");
 
 			const authorName = interaction.user.username;
 			const authorId = interaction.user.id;
@@ -35,6 +50,8 @@ export const Birthday: Command = {
 			const monthName = new Date(2021, parseInt(month) - 1, 1).toLocaleString(languageValue, { month: "long" });
 
 			if (!regexDay.test(day || "")) {
+				birthdayQueue.delete(interaction.user.id);
+
 				return interaction.followUp({
 					ephemeral: true,
 					content: "Please enter a valid day in the format DD",
@@ -42,6 +59,8 @@ export const Birthday: Command = {
 			}
 
 			if (!regexMonth.test(month || "")) {
+				birthdayQueue.delete(interaction.user.id);
+
 				return interaction.followUp({
 					ephemeral: true,
 					content: "Please enter a valid month in the format MM",
@@ -49,8 +68,7 @@ export const Birthday: Command = {
 			}
 
 			await interaction.followUp({
-				ephemeral: false,
-				content: `We will generate a Pokemon image for your birthday ${day}/${month} in ${languageName}`,
+				content: `...We are generating a Pokemon card based on <@${authorId}> birthday (${day}/${month})`,
 			});
 
 			try {
@@ -192,15 +210,18 @@ export const Birthday: Command = {
 
 				const attachment = new AttachmentBuilder(image as string, { name: `pokemon-${authorName}.png` });
 
-				await interaction.editReply({
-					content: `Happy birthday <@${authorId}>!`,
+				await interaction.followUp({
+					content: `The pokemon for <@${authorId}> is **${pokemonName}**!`,
 					files: [attachment]
-				}
-				);
-
+				});
 			} catch (err) {
-				console.log("Error generating image: ", err);
-				interaction.followUp("Error generating image: " + err)
+				birthdayQueue.delete(interaction.user.id);
+				interaction.followUp({
+					ephemeral: true,
+					content: `An error occurred while trying to generate your birthday card. Please try again later.`
+				})
+			} finally {
+				birthdayQueue.delete(interaction.user.id);
 			}
 		}
 	},
