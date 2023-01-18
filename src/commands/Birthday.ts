@@ -9,7 +9,7 @@ const birthdayQueue = new Map();
 
 export const Birthday: Command = {
 	name: "birthday",
-	description: "Generates a Pokemon image for your birthday",
+	description: "Generates a Pokemon card for your birthday",
 	type: ApplicationCommandType.ChatInput,
 	options: [
 		{ name: "day", description: "Day of your birthday", type: ApplicationCommandOptionType.String, required: true },
@@ -61,7 +61,7 @@ export const Birthday: Command = {
 				});
 			}
 
-			const { pokemon } = await GeneralEndpoints.getDailyPokemon(+day, +month);
+			const pokemon = await GeneralEndpoints.getDailyPokemon(+day, +month);
 
 			await interaction.followUp({
 				content: `...We are generating a Pokemon card based on <@${authorId}> birthday (${day}/${month})`,

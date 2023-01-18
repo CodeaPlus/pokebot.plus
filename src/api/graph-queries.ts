@@ -25,3 +25,19 @@ export const operationPokemonDaily = `
     }
   }
 `;
+
+export const operationPokemonRandom = `
+  query MyQuery {
+    randomPokemon: random_pokemon {
+      id
+      height
+      is_shiny
+      name
+      order
+      sprites
+      flavors
+      types
+      weight
+    }
+  }
+`;

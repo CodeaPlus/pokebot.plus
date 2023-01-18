@@ -7,7 +7,7 @@ export const getColor = (pokemon: Pokemon) => {
 }
 
 export const getShinyChance = (pokemon: Pokemon) => {
-  const shinyChance = Math.floor(Math.random() * 100) + 1;
+  const shinyChance = Math.floor(Math.random() * 683) + 1;
   return shinyChance <= 1 ? pokemon.sprites[0].frontShiny || pokemon.sprites[0].frontDefault : pokemon.sprites[0].frontDefault;
 }
 
