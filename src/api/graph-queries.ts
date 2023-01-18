@@ -1,27 +1,17 @@
 export const operationPokemonDaily = `
-  query MyQuery($where: daily_pokemon_bool_exp) {
-    daily: daily_pokemon(limit: 1, where: $where) {
-      month
+  query MyQuery($where: daily_pokemon_view_bool_exp) {
+    daily: daily_pokemon_view(where: $where) {
       day
-      pokemon {
-        height
-        id
-        name
-        order
-        types {
-          color
-          name
-        }
-        weight
-        sprites {
-          frontDefault: front_default
-          frontShiny: front_shiny
-        }
-        flavors {
-          language
-          text
-        }
-      }
+      flavors
+      height
+      id
+      isShiny: is_shiny
+      month
+      name
+      order
+      sprites
+      types
+      weight
     }
   }
 `;
@@ -29,13 +19,13 @@ export const operationPokemonDaily = `
 export const operationPokemonRandom = `
   query MyQuery {
     randomPokemon: random_pokemon {
-      id
+      flavors
       height
-      is_shiny
+      id
+      isShiny: is_shiny
       name
       order
       sprites
-      flavors
       types
       weight
     }

@@ -8,6 +8,7 @@ export interface DailyPokemon {
 export interface Pokemon {
   height: number;
   id: number;
+  isShiny: boolean;
   name: string;
   order: number;
   types: Type[];

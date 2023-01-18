@@ -25,16 +25,13 @@ const getDailyPokemon = async (day: number, month: number): Promise<Pokemon> => 
       }
     )
 
-    // if types has two or more types, change the position randomly
     // TODO: @Panda.dev - Improve this logic in backend
-    if (data.daily[0].pokemon.types.length > 1) {
-      const randomPosition = Math.floor(Math.random() * data.daily[0].pokemon.types.length);
-      const type = data.daily[0].pokemon.types[randomPosition];
-      data.daily[0].pokemon.types[randomPosition] = data.daily[0].pokemon.types[0];
-      data.daily[0].pokemon.types[0] = type;
-    }
+    data.daily[0].sprites = [{
+      frontDefault: data.daily[0].sprites[0].front_default,
+      frontShiny: data.daily[0].sprites[0].front_shiny
+    }];
 
-    return data.daily[0].pokemon;
+    return data.daily[0];
   } catch (error) {
     throw getError(error as RequestError)
   }
