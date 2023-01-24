@@ -4,6 +4,7 @@ import { regexDay, regexMonth } from "../utils/pokemon.utils";
 import { languages } from '../domain/pokemon.interface';
 import { GeneralEndpoints } from '../api/general.endpoints';
 import { getPokemonImage } from "../helpers/pokemon.helpers";
+import { optionButtons } from "../components/OptionButtons";
 
 const birthdayQueue = new Map();
 
@@ -68,15 +69,45 @@ export const RandomPokemon: Command = {
       });
 
       try {
-        const { image, pokemonName } = await getPokemonImage(day, monthName, authorName, authorAvatar || '', languageValue, pokemon);
-
+        const { image, pokemonName, types } = await getPokemonImage(day, monthName, authorName, authorAvatar || '', languageValue, pokemon);
         const attachment = new AttachmentBuilder(image as string, { name: `pokemon-${authorName}.png` });
 
         await interaction.followUp({
           content: `The pokemon for <@${authorId}> is **${pokemonName}**!`,
           files: [attachment]
+        }).then(async msg => {
+          const attachment = msg.attachments.first();
+
+          if (attachment) {
+            const newUserCard = await GeneralEndpoints.insertUserCard({
+              discordUserId: authorId,
+              attachmentId: attachment.id,
+              avatarUrl: authorAvatar || '',
+              day: parseInt(day),
+              image: attachment.url,
+              month: parseInt(month),
+              pokemonId: String(pokemon.id),
+              type: pokemon.types[0].name,
+              username: authorName
+            })
+
+            if (!newUserCard) {
+              birthdayQueue.delete(interaction.user.id);
+              interaction.followUp({
+                ephemeral: true,
+                content: `An error occurred while trying to generate your birthday card. Please try again later.`
+              })
+            }
+
+            await interaction.followUp({
+              content: `You can share this card on twitter!`,
+              components: [optionButtons(attachment.id)],
+              ephemeral: true
+            })
+          }
         });
       } catch (err) {
+        console.log(err)
         birthdayQueue.delete(interaction.user.id);
         interaction.followUp({
           ephemeral: true,

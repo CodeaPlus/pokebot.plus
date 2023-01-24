@@ -44,3 +44,16 @@ export const languages = [{
   name: "Japanese",
   value: "ja"
 }]
+
+export interface PokeUserCard {
+  attachmentId: string,
+  avatarUrl: string,
+  day: number,
+  discordUserId: string,
+  image: string,
+  month: number,
+  pokemonId: string,
+  type: string,
+  username: string,
+  id?: number,
+}

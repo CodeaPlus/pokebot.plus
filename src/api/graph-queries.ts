@@ -31,3 +31,37 @@ export const operationPokemonRandom = `
     }
   }
 `;
+
+export const getPokeUserCard = `
+  query PokeGet($where: user_cards_bool_exp) {
+    userCards: user_cards(where: $where) {
+      attachmentId
+      avatarUrl
+      day
+      discordUserId
+      id
+      image
+      month
+      pokemonId
+      type
+      username
+    }
+  }
+`;
+
+export const insertPokeUserCard = `
+  mutation PokeUpdate($object: user_cards_insert_input!) {
+    userCard: insert_user_cards_one(object: $object) {
+      attachmentId
+      avatarUrl
+      day
+      discordUserId
+      id
+      image
+      month
+      pokemonId
+      type
+      username
+    }
+  }
+`;

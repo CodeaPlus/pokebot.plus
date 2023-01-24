@@ -9,7 +9,6 @@ export const getPokemonImage = async (day: string, monthName: string, authorName
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-  // Remove - from pokemon name
   const pokemonNameNoDash = pokemonName.replace("-", " ");
 
   const image = await nodeHtmlToImage({
@@ -26,7 +25,7 @@ export const getPokemonImage = async (day: string, monthName: string, authorName
             font-weight: 400;
             height: 768px;
             position: relative;
-            width: 1080px;
+            width: 1471px;
           }
           .overlay {
             background-image: url({{pattern}});
@@ -36,8 +35,9 @@ export const getPokemonImage = async (day: string, monthName: string, authorName
           }
           img.pokemon {
             position: absolute;
-            height: 80%;
+            height: 100%;
             right: 0;
+            top: 0;
             z-index: 30;
           }
           .user-data {
@@ -151,6 +151,7 @@ export const getPokemonImage = async (day: string, monthName: string, authorName
 
   return {
     image,
-    pokemonName: pokemonNameNoDash
+    pokemonName: pokemonNameNoDash,
+    types: getTypes(pokemon),
   };
 }
