@@ -52,7 +52,7 @@ export interface PokeUserCard {
   discordUserId: string,
   image: string,
   month: number,
-  pokemonId: string,
+  pokemonId: number,
   type: string,
   username: string,
   id?: number,

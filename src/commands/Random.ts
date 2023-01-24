@@ -86,7 +86,7 @@ export const RandomPokemon: Command = {
               day: parseInt(day),
               image: attachment.url,
               month: parseInt(month),
-              pokemonId: String(pokemon.id),
+              pokemonId: pokemon.id,
               type: pokemon.types[0].name,
               username: authorName
             })
