@@ -69,7 +69,7 @@ export const RandomPokemon: Command = {
       });
 
       try {
-        const { image, pokemonName, types } = await getPokemonImage(day, monthName, authorName, authorAvatar || '', languageValue, pokemon);
+        const { image, pokemonName } = await getPokemonImage(day, monthName, authorName, authorAvatar || '', languageValue, pokemon);
         const attachment = new AttachmentBuilder(image as string, { name: `pokemon-${authorName}.png` });
 
         await interaction.followUp({
