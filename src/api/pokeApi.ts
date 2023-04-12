@@ -7,7 +7,7 @@ export const pokeGraphQL = async (
   orderBy?: Record<string, any>
 ) => {
   return axios({
-    url: 'https://api.tiopanda.dev/v1/graphql',
+    url: 'https://apipkm.codea.plus/v1/graphql',
     method: 'post',
     data: {
       query: operationsDoc,
